@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuscrito - Estúdio de Formação</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: var(--primary);
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        main {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        /* Área de Entrada */
+        .input-section {
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+
+        button:hover { opacity: 0.8; }
+
+        .btn-add { background: var(--accent); color: white; }
+        .btn-img { background: var(--secondary); color: white; }
+        .btn-export { background: var(--success); color: white; margin-left: auto; }
+
+        /* Lista de Blocos */
+        #blocks-list {
+            margin-top: 20px;
+        }
+
+        .block-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .block-type {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+
+        .block-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .block-content {
+            font-size: 14px;
+            color: #333;
+            max-height: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .img-preview {
+            max-width: 100px;
+            max-height: 100px;
+            object-fit: contain;
+        }
+
+        .img-position-controls {
+            display: flex;
+            gap: 5px;
+            font-size: 12px;
+        }
+
+        /* Configurações de Template */
+        .template-selector {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: var(--light);
+            border-radius: 4px;
+        }
+
+        /* Estilos de Impressão (O Motor do PDF) */
+        @media print {
+            @page {
+                margin: 20mm;
+            }
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
+            #print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                color: black;
+            }
+            .no-print { display: none !important; }
+            
+            /* Classes de Template via JS serão injetadas aqui */
+            .template-abnt { font-family: Arial, sans-serif; line-height: 1.5; font-size: 12pt; text-align: justify; }
+            .template-livro { font-family: Georgia, serif; line-height: 1.6; font-size: 13pt; }
+            .template-executivo { font-family: 'Helvetica Neue', Helvetica, sans-serif; color: #2c3e50; }
+            .template-ata { font-family: 'Courier New', Courier, monospace; font-size: 11pt; line-height: 1.4; border-top: 2px solid black; padding-top: 20px; }
+            .template-ata p::before { content: "• "; } /* Marcador para parecer ata */
+
+            .page-break { page-break-before: always; }
+            
+            /* Posicionamento de Imagem no PDF */
+            .img-block { display: block; margin: 10px 0; width: 100%; }
+            .img-top { order: -1; }
+            .img-center { margin: 20px auto; text-align: center; }
+            .img-bottom { order: 1; }
+            .full-width { width: 100%; max-height: 90vh; object-fit: contain; }
+        }
+
+        /* Área de Visualização Invisível até a Impressão */
+        #print-area { display: none; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Manuscrito 🦁</h1>
+    <p>Estúdio de Formatação Acessível</p>
+</header>
+
+<main>
+    <div class="template-selector">
+        <label for="select-template"><strong>Escolha o Modelo Comercial:</strong></label>
+        <select id="select-template">
+            <option value="template-abnt">Acadêmico (ABNT)</option>
+            <option value="template-livro">Livro / Crônica</option>
+            <option value="template-executivo">Relatório Executivo</option>
+            <option value="template-ata">Ata de Reunião</option>
+        </select>
+    </div>
+
+    <section class="input-section">
+        <textarea id="text-input" placeholder="Cole ou escreva seu texto aqui..."></textarea>
+        <div class="controls">
+            <button class="btn-add" onclick="addTextBlock()">+ Adicionar Texto</button>
+            <button class="btn-img" onclick="document.getElementById('file-input').click()">+ Adicionar Imagem</button>
+            <input type="file" id="file-input" style="display:none" accept="image/*" onchange="addImageBlock(event)">
+            <button class="btn-export" onclick="exportPDF()">Gerar PDF Final</button>
+        </div>
+    </section>
+
+    <div id="blocks-list">
+        <!-- Blocos entrarão aqui -->
+    </div>
+</main>
+
+<!-- Área oculta que será montada para a impressão -->
+<div id="print-area"></div>
+
+<script>
+    let blocks = [];
+
+    // Carregar dados salvos
+    window.onload = () => {
+        const saved = localStorage.getItem('manuscrito_blocks');
+        if (saved) {
+            blocks = JSON.parse(saved);
+            renderBlocks();
+        }
+    };
+
+    function save() {
+        localStorage.setItem('manuscrito_blocks', JSON.stringify(blocks));
+    }
+
+    function renderBlocks() {
+        const list = document.getElementById('blocks-list');
+        list.innerHTML = '';
+
+        blocks.forEach((block, index) => {
+            const card = document.createElement('div');
+            card.className = 'block-card';
+            
+            let contentHtml = '';
+            if (block.type === 'text') {
+                contentHtml = `<div class="block-content">${block.content.substring(0, 100)}...</div>`;
+            } else {
+                contentHtml = `
+                    <img src="${block.content}" class="img-preview">
+                    <div class="img-position-controls">
+                        Posição: 
+                        <button onclick="updateImgPos(${index}, 'img-top')">Topo</button>
+                        <button onclick="updateImgPos(${index}, 'img-center')">Centro</button>
+                        <button onclick="updateImgPos(${index}, 'img-bottom')">Base</button>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="block-header">
+                    <span class="block-type">${block.type}</span>
+                    <div class="block-actions">
+                        <button onclick="move(${index}, -1)" aria-label="Subir bloco">↑</button>
+                        <button onclick="move(${index}, 1)" aria-label="Descer bloco">↓</button>
+                        <button onclick="removeBlock(${index})" style="background:var(--danger); color:white;">X</button>
+                    </div>
+                </div>
+                ${contentHtml}
+            `;
+            list.appendChild(card);
+        });
+        save();
+    }
+
+    function addTextBlock() {
+        const text = document.getElementById('text-input').value;
+        if (!text) return;
+        blocks.push({ type: 'text', content: text });
+        document.getElementById('text-input').value = '';
+        renderBlocks();
+    }
+
+    function addImageBlock(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            blocks.push({ 
+                type: 'image', 
+                content: e.target.result, 
+                position: 'img-center' 
+            });
+            renderBlocks();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function updateImgPos(index, pos) {
+        blocks[index].position = pos;
+        alert("Posição da imagem alterada para: " + pos);
+    }
+
+    function move(index, direction) {
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= blocks.length) return;
+        const temp = blocks[index];
+        blocks[index] = blocks[newIndex];
+        blocks[newIndex] = temp;
+        renderBlocks();
+    }
+
+    function removeBlock(index) {
+        if (confirm("Deseja remover este bloco?")) {
+            blocks.splice(index, 1);
+            renderBlocks();
+        }
+    }
+
+    function exportPDF() {
+        const printArea = document.getElementById('print-area');
+        const template = document.getElementById('select-template').value;
+        printArea.innerHTML = '';
+        printArea.className = template;
+
+        blocks.forEach((block, index) => {
+            const div = document.createElement('div');
+            if (block.type === 'text') {
+                div.innerHTML = `<p style="white-space: pre-wrap;">${block.content}</p>`;
+            } else {
+                div.className = 'img-block ' + (block.position || 'img-center');
+                div.innerHTML = `<img src="${block.content}" class="full-width">`;
+            }
+            
+            // Lógica de Capa: Se for o primeiro bloco e for imagem, pode ocupar a página toda
+            if (index === 0 && block.type === 'image') {
+                div.classList.add('page-break');
+            }
+
+            printArea.appendChild(div);
+        });
+
+        window.print();
+    }
+</script>
+
+</body>
+</html>
