@@ -151,6 +151,7 @@
             body * { visibility: hidden; }
             #print-area, #print-area * { visibility: visible; }
             #print-area {
+                display: block !important;
                 position: absolute;
                 left: 0;
                 top: 0;
@@ -228,8 +229,13 @@
     window.onload = () => {
         const saved = localStorage.getItem('manuscrito_blocks');
         if (saved) {
-            blocks = JSON.parse(saved);
-            renderBlocks();
+            try {
+                blocks = JSON.parse(saved);
+                renderBlocks();
+            } catch(e) {
+                console.error("Erro ao carregar blocos salvos:", e);
+                blocks = [];
+            }
         }
     };
 
@@ -326,6 +332,11 @@
         const template = document.getElementById('select-template').value;
         printArea.innerHTML = '';
         printArea.className = template;
+
+        if (blocks.length === 0) {
+            alert("Adicione algum conteúdo antes de exportar.");
+            return;
+        }
 
         blocks.forEach((block, index) => {
             const div = document.createElement('div');
