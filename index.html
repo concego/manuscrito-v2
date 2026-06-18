@@ -166,6 +166,26 @@
             .template-executivo { font-family: 'Helvetica Neue', Helvetica, sans-serif; color: #2c3e50; }
             .template-ata { font-family: 'Courier New', Courier, monospace; font-size: 11pt; line-height: 1.4; border-top: 2px solid black; padding-top: 20px; }
             .template-ata p::before { content: "• "; } /* Marcador para parecer ata */
+            
+            /* Template RPG */
+            .template-rpg { 
+                font-family: 'Georgia', serif; 
+                background-color: #fdf6e3; 
+                color: #5d4037;
+                padding: 30px;
+                border: 10px double #8d6e63;
+                min-height: 100vh;
+            }
+            .template-rpg p { 
+                border-bottom: 1px dashed #a1887f;
+                padding-bottom: 5px;
+                margin-bottom: 15px;
+            }
+            .template-rpg img {
+                border: 3px solid #8d6e63;
+                box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+                border-radius: 5px;
+            }
 
             .page-break { page-break-before: always; }
             
@@ -196,6 +216,7 @@
             <option value="template-livro">Livro / Crônica</option>
             <option value="template-executivo">Relatório Executivo</option>
             <option value="template-ata">Ata de Reunião</option>
+            <option value="template-rpg">Ficha de RPG / Aventura</option>
         </select>
     </div>
 
