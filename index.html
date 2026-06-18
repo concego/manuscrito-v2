@@ -206,6 +206,8 @@
             <button class="btn-img" onclick="document.getElementById('file-input').click()">+ Adicionar Imagem</button>
             <input type="file" id="file-input" style="display:none" accept="image/*" onchange="addImageBlock(event)">
             <button class="btn-export" onclick="exportPDF()">Gerar PDF Final</button>
+            <button class="btn-img" style="background: #9b59b6; color: white;" onclick="exportTXT()">Baixar TXT</button>
+            <button class="btn-img" style="background: #e67e22; color: white;" onclick="exportHTML()">Baixar HTML</button>
         </div>
     </section>
 
@@ -356,6 +358,56 @@
         });
 
         window.print();
+    }
+
+    function exportTXT() {
+        let textContent = "";
+        blocks.forEach(block => {
+            if (block.type === 'text') {
+                textContent += block.content + "\n\n";
+            } else {
+                textContent += "[Imagem: " + (block.position || 'centro') + "]\n\n";
+            }
+        });
+        
+        const blob = new Blob([textContent], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'Manuscrito_Documento.txt';
+        a.click();
+    }
+
+    function exportHTML() {
+        const template = document.getElementById('select-template').value;
+        const style = document.querySelector('style').innerHTML;
+        
+        let bodyContent = "";
+        blocks.forEach(block => {
+            if (block.type === 'text') {
+                bodyContent += `<p style="white-space: pre-wrap;">${block.content}</p>`;
+            } else {
+                bodyContent += `<div class="img-block ${block.position || 'img-center'}"><img src="${block.content}" style="width:100%"></div>`;
+            }
+        });
+
+        const fullHtml = `
+            <!DOCTYPE html>
+            <html lang="pt-br">
+            <head>
+                <meta charset="UTF-8">
+                <style>${style}</style>
+            </head>
+            <body class="${template}" style="background: white; padding: 40px;">
+                ${bodyContent}
+            </body>
+            </html>
+        `;
+
+        const blob = new Blob([fullHtml], { type: 'text/html' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'Manuscrito_Documento.html';
+        a.click();
     }
 </script>
 
