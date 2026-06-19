@@ -226,8 +226,10 @@
             <button class="btn-add" onclick="addTextBlock()">+ Adicionar Texto</button>
             <button class="btn-img" onclick="document.getElementById('file-input').click()">+ Adicionar Imagem</button>
             <input type="file" id="file-input" style="display:none" accept="image/*" onchange="addImageBlock(event)">
-            <button class="btn-export" style="background: #2ecc71;" onclick="exportDOCX()">Baixar Word (.docx)</button>
-            <button class="btn-img" style="background: #9b59b6; color: white;" onclick="exportTXT()">Baixar Texto (.txt)</button>
+            <button class="btn-export" style="background: #2ecc71;" onclick="exportDOCX()">Word (.doc)</button>
+            <button class="btn-img" style="background: #e67e22; color: white;" onclick="exportHTML()">Página (.html)</button>
+            <button class="btn-img" style="background: #34495e; color: white;" onclick="exportMarkdown()">Markdown (.md)</button>
+            <button class="btn-img" style="background: #9b59b6; color: white;" onclick="exportTXT()">Texto (.txt)</button>
         </div>
     </section>
 
@@ -396,7 +398,40 @@
     }
 
     function exportHTML() {
-        // Removido conforme solicitado
+        const template = document.getElementById('select-template').value;
+        const style = document.querySelector('style').innerHTML;
+        
+        let bodyContent = "";
+        blocks.forEach(block => {
+            if (block.type === 'text') {
+                bodyContent += `<p style="white-space: pre-wrap;">${block.content}</p>`;
+            } else {
+                bodyContent += `<div class="img-block ${block.position || 'img-center'}"><img src="${block.content}" style="max-width:100%"></div>`;
+            }
+        });
+
+        const fullHtml = `<!DOCTYPE html><html lang="pt-br"><head><meta charset="UTF-8"><style>${style}</style></head><body class="${template}" style="background: white; padding: 40px;">${bodyContent}</body></html>`;
+        const blob = new Blob([fullHtml], { type: 'text/html' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'Manuscrito_Documento.html';
+        a.click();
+    }
+
+    function exportMarkdown() {
+        let mdContent = "";
+        blocks.forEach(block => {
+            if (block.type === 'text') {
+                mdContent += block.content + "\n\n";
+            } else {
+                mdContent += `![Imagem](${block.content})\n\n`;
+            }
+        });
+        const blob = new Blob([mdContent], { type: 'text/markdown' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'Manuscrito_Documento.md';
+        a.click();
     }
 </script>
 
