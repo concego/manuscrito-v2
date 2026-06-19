@@ -226,9 +226,8 @@
             <button class="btn-add" onclick="addTextBlock()">+ Adicionar Texto</button>
             <button class="btn-img" onclick="document.getElementById('file-input').click()">+ Adicionar Imagem</button>
             <input type="file" id="file-input" style="display:none" accept="image/*" onchange="addImageBlock(event)">
-            <button class="btn-export" onclick="exportPDF()">Gerar PDF Final</button>
-            <button class="btn-img" style="background: #9b59b6; color: white;" onclick="exportTXT()">Baixar TXT</button>
-            <button class="btn-img" style="background: #e67e22; color: white;" onclick="exportHTML()">Baixar HTML</button>
+            <button class="btn-export" style="background: #2ecc71;" onclick="exportDOCX()">Baixar Word (.docx)</button>
+            <button class="btn-img" style="background: #9b59b6; color: white;" onclick="exportTXT()">Baixar Texto (.txt)</button>
         </div>
     </section>
 
@@ -350,35 +349,33 @@
         }
     }
 
-    function exportPDF() {
-        const printArea = document.getElementById('print-area');
+    function exportDOCX() {
         const template = document.getElementById('select-template').value;
-        printArea.innerHTML = '';
-        printArea.className = template;
-
-        if (blocks.length === 0) {
-            alert("Adicione algum conteúdo antes de exportar.");
-            return;
-        }
-
-        blocks.forEach((block, index) => {
-            const div = document.createElement('div');
+        let bodyContent = "";
+        
+        blocks.forEach(block => {
             if (block.type === 'text') {
-                div.innerHTML = `<p style="white-space: pre-wrap;">${block.content}</p>`;
+                bodyContent += `<p>${block.content.replace(/\n/g, '<br>')}</p>`;
             } else {
-                div.className = 'img-block ' + (block.position || 'img-center');
-                div.innerHTML = `<img src="${block.content}" class="full-width">`;
+                bodyContent += `<p><img src="${block.content}" style="width:300px"></p>`;
             }
-            
-            // Lógica de Capa: Se for o primeiro bloco e for imagem, pode ocupar a página toda
-            if (index === 0 && block.type === 'image') {
-                div.classList.add('page-break');
-            }
-
-            printArea.appendChild(div);
         });
 
-        window.print();
+        // Cabeçalho necessário para o Word reconhecer como HTML/Word
+        const header = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                        <head><meta charset='utf-8'><title>Export DOCX</title></head><body>`;
+        const footer = "</body></html>";
+        const sourceHTML = header + bodyContent + footer;
+        
+        const blob = new Blob(['\ufeff', sourceHTML], {
+            type: 'application/msword'
+        });
+        
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Manuscrito_Documento.doc'; // Usamos .doc para compatibilidade total via blob
+        a.click();
     }
 
     function exportTXT() {
@@ -399,36 +396,7 @@
     }
 
     function exportHTML() {
-        const template = document.getElementById('select-template').value;
-        const style = document.querySelector('style').innerHTML;
-        
-        let bodyContent = "";
-        blocks.forEach(block => {
-            if (block.type === 'text') {
-                bodyContent += `<p style="white-space: pre-wrap;">${block.content}</p>`;
-            } else {
-                bodyContent += `<div class="img-block ${block.position || 'img-center'}"><img src="${block.content}" style="width:100%"></div>`;
-            }
-        });
-
-        const fullHtml = `
-            <!DOCTYPE html>
-            <html lang="pt-br">
-            <head>
-                <meta charset="UTF-8">
-                <style>${style}</style>
-            </head>
-            <body class="${template}" style="background: white; padding: 40px;">
-                ${bodyContent}
-            </body>
-            </html>
-        `;
-
-        const blob = new Blob([fullHtml], { type: 'text/html' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'Manuscrito_Documento.html';
-        a.click();
+        // Removido conforme solicitado
     }
 </script>
 
