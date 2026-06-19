@@ -14,6 +14,8 @@ Oferecer uma alternativa leve aos editores pesados, focando em quem precisa de u
 - **Sistema de Blocos:** Adicione blocos de texto ou imagens de forma independente.
 - **Exportação Multi-formato:**
   - **Word (.doc):** Gere arquivos compatíveis com Microsoft Word e Google Docs, mantendo a estrutura para finalização posterior.
+  - **Página Web (.html):** Exporte como uma página completa com o visual do template escolhido.
+  - **Markdown (.md):** Perfeito para documentação técnica e integração com ferramentas como GitHub.
   - **Texto Puro (.txt):** Para exportação rápida de conteúdo.
 - **Privacidade Total:** Processamento 100% local, seus dados não saem do seu computador.
 
