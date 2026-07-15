@@ -39,6 +39,53 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.05);
         }
 
+        /* Região de anúncios para leitores de tela */
+        #leitor-anuncio {
+            position: absolute;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+
+        /* Mensagem de feedback visível e acessível */
+        #msg-feedback {
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-bottom: 14px;
+            font-weight: bold;
+            font-size: 15px;
+            display: none;
+        }
+        #msg-feedback.sucesso { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: block; }
+        #msg-feedback.erro    { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block; }
+        #msg-feedback.info    { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; display: block; }
+
+        /* Diálogo de confirmação acessível */
+        #dialogo-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        #dialogo-overlay.ativo { display: flex; }
+        #dialogo-box {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 340px;
+            width: 90%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        #dialogo-box p { font-size: 16px; margin-bottom: 20px; color: var(--primary); }
+        #dialogo-box .dialogo-btns { display: flex; gap: 12px; justify-content: center; }
+        #dialogo-btn-sim  { background: var(--danger);  color: white; padding: 10px 24px; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        #dialogo-btn-nao  { background: var(--secondary); color: white; padding: 10px 24px; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
+
         /* Área de Entrada */
         .input-section {
             border-bottom: 2px solid var(--light);
@@ -74,14 +121,12 @@
 
         button:hover { opacity: 0.8; }
 
-        .btn-add { background: var(--accent); color: white; }
-        .btn-img { background: var(--secondary); color: white; }
-        .btn-export { background: var(--success); color: white; margin-left: auto; }
+        .btn-add    { background: var(--accent);   color: white; }
+        .btn-img    { background: var(--secondary); color: white; }
+        .btn-export { background: var(--success);  color: white; }
 
         /* Lista de Blocos */
-        #blocks-list {
-            margin-top: 20px;
-        }
+        #blocks-list { margin-top: 20px; }
 
         .block-card {
             background: #fff;
@@ -110,10 +155,7 @@
             color: #7f8c8d;
         }
 
-        .block-actions {
-            display: flex;
-            gap: 5px;
-        }
+        .block-actions { display: flex; gap: 5px; }
 
         .block-content {
             font-size: 14px;
@@ -123,19 +165,11 @@
             text-overflow: ellipsis;
         }
 
-        .img-preview {
-            max-width: 100px;
-            max-height: 100px;
-            object-fit: contain;
-        }
+        .img-preview { max-width: 100px; max-height: 100px; object-fit: contain; }
 
-        .img-position-controls {
-            display: flex;
-            gap: 5px;
-            font-size: 12px;
-        }
+        .img-position-controls { display: flex; gap: 5px; font-size: 12px; flex-wrap: wrap; }
 
-        /* Configurações de Template */
+        /* Template selector */
         .template-selector {
             margin-bottom: 20px;
             padding: 10px;
@@ -143,65 +177,61 @@
             border-radius: 4px;
         }
 
-        /* Estilos de Impressão (O Motor do PDF) */
+        /* Estilos de impressão */
         @media print {
-            @page {
-                margin: 20mm;
-            }
+            @page { margin: 20mm; }
             body * { visibility: hidden; }
             #print-area, #print-area * { visibility: visible; }
             #print-area {
                 display: block !important;
                 position: absolute;
-                left: 0;
-                top: 0;
+                left: 0; top: 0;
                 width: 100%;
                 color: black;
             }
             .no-print { display: none !important; }
-            
-            /* Classes de Template via JS serão injetadas aqui */
-            .template-abnt { font-family: Arial, sans-serif; line-height: 1.5; font-size: 12pt; text-align: justify; }
-            .template-livro { font-family: Georgia, serif; line-height: 1.6; font-size: 13pt; }
-            .template-executivo { font-family: 'Helvetica Neue', Helvetica, sans-serif; color: #2c3e50; }
-            .template-ata { font-family: 'Courier New', Courier, monospace; font-size: 11pt; line-height: 1.4; border-top: 2px solid black; padding-top: 20px; }
-            .template-ata p::before { content: "• "; } /* Marcador para parecer ata */
-            
-            /* Template RPG */
-            .template-rpg { 
-                font-family: 'Georgia', serif; 
-                background-color: #fdf6e3; 
+
+            .template-abnt     { font-family: Arial, sans-serif; line-height: 1.5; font-size: 12pt; text-align: justify; }
+            .template-livro    { font-family: Georgia, serif; line-height: 1.6; font-size: 13pt; }
+            .template-executivo{ font-family: 'Helvetica Neue', Helvetica, sans-serif; color: #2c3e50; }
+            .template-ata      { font-family: 'Courier New', Courier, monospace; font-size: 11pt; line-height: 1.4; border-top: 2px solid black; padding-top: 20px; }
+            .template-ata p::before { content: "• "; }
+            .template-rpg {
+                font-family: 'Georgia', serif;
+                background-color: #fdf6e3;
                 color: #5d4037;
                 padding: 30px;
                 border: 10px double #8d6e63;
                 min-height: 100vh;
             }
-            .template-rpg p { 
-                border-bottom: 1px dashed #a1887f;
-                padding-bottom: 5px;
-                margin-bottom: 15px;
-            }
-            .template-rpg img {
-                border: 3px solid #8d6e63;
-                box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
-                border-radius: 5px;
-            }
-
+            .template-rpg p { border-bottom: 1px dashed #a1887f; padding-bottom: 5px; margin-bottom: 15px; }
+            .template-rpg img { border: 3px solid #8d6e63; box-shadow: 5px 5px 15px rgba(0,0,0,0.2); border-radius: 5px; }
             .page-break { page-break-before: always; }
-            
-            /* Posicionamento de Imagem no PDF */
             .img-block { display: block; margin: 10px 0; width: 100%; }
-            .img-top { order: -1; }
+            .img-top    { order: -1; }
             .img-center { margin: 20px auto; text-align: center; }
             .img-bottom { order: 1; }
             .full-width { width: 100%; max-height: 90vh; object-fit: contain; }
         }
 
-        /* Área de Visualização Invisível até a Impressão */
         #print-area { display: none; }
     </style>
 </head>
 <body>
+
+<!-- Região aria-live: anúncios invisíveis para leitores de tela -->
+<div id="leitor-anuncio" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Diálogo de confirmação acessível (substitui confirm()) -->
+<div id="dialogo-overlay" role="dialog" aria-modal="true" aria-labelledby="dialogo-texto">
+    <div id="dialogo-box">
+        <p id="dialogo-texto">Deseja remover este bloco?</p>
+        <div class="dialogo-btns">
+            <button id="dialogo-btn-sim" aria-label="Confirmar remoção do bloco">Remover</button>
+            <button id="dialogo-btn-nao" aria-label="Cancelar remoção">Cancelar</button>
+        </div>
+    </div>
+</div>
 
 <header>
     <h1>Manuscrito</h1>
@@ -211,7 +241,7 @@
 <main>
     <div class="template-selector">
         <label for="select-template"><strong>Escolha o Modelo Comercial:</strong></label>
-        <select id="select-template">
+        <select id="select-template" aria-label="Modelo de formatação do documento">
             <option value="template-abnt">Acadêmico (ABNT)</option>
             <option value="template-livro">Livro / Crônica</option>
             <option value="template-executivo">Relatório Executivo</option>
@@ -220,44 +250,92 @@
         </select>
     </div>
 
-    <section class="input-section">
-        <textarea id="text-input" placeholder="Cole ou escreva seu texto aqui..."></textarea>
-        <div class="controls">
-            <button class="btn-add" onclick="addTextBlock()">+ Adicionar Texto</button>
-            <button class="btn-img" onclick="document.getElementById('file-input').click()">+ Adicionar Imagem</button>
-            <input type="file" id="file-input" style="display:none" accept="image/*" onchange="addImageBlock(event)">
-            <button class="btn-export" style="background: #2ecc71;" onclick="exportDOCX()">Word (.doc)</button>
-            <button class="btn-img" style="background: #e67e22; color: white;" onclick="exportHTML()">Página (.html)</button>
-            <button class="btn-img" style="background: #34495e; color: white;" onclick="exportMarkdown()">Markdown (.md)</button>
-            <button class="btn-img" style="background: #9b59b6; color: white;" onclick="exportTXT()">Texto (.txt)</button>
+    <!-- Feedback visível e falado -->
+    <div id="msg-feedback" role="alert" aria-live="assertive"></div>
+
+    <section class="input-section" aria-label="Área de entrada de conteúdo">
+        <label for="text-input">Texto para adicionar ao documento:</label>
+        <textarea id="text-input" placeholder="Cole ou escreva seu texto aqui..." aria-label="Campo de texto para novo bloco"></textarea>
+        <div class="controls" role="toolbar" aria-label="Ações do documento">
+            <button class="btn-add" onclick="addTextBlock()" aria-label="Adicionar bloco de texto ao documento">+ Adicionar Texto</button>
+            <button class="btn-img" onclick="document.getElementById('file-input').click()" aria-label="Adicionar imagem ao documento">+ Adicionar Imagem</button>
+            <input type="file" id="file-input" style="display:none" accept="image/*" onchange="addImageBlock(event)" aria-label="Selecionar imagem do dispositivo">
+            <button class="btn-export" style="background:#2ecc71;" onclick="exportDOCX()" aria-label="Exportar documento como Word">Word (.doc)</button>
+            <button class="btn-img" style="background:#e67e22;" onclick="exportHTML()" aria-label="Exportar documento como página HTML">Página (.html)</button>
+            <button class="btn-img" style="background:#34495e;" onclick="exportMarkdown()" aria-label="Exportar documento como Markdown">Markdown (.md)</button>
+            <button class="btn-img" style="background:#9b59b6;" onclick="exportTXT()" aria-label="Exportar documento como texto simples">Texto (.txt)</button>
         </div>
     </section>
 
-    <div id="blocks-list">
-        <!-- Blocos entrarão aqui -->
-    </div>
+    <section id="blocks-list" aria-label="Lista de blocos do documento" aria-live="polite">
+        <!-- Blocos renderizados aqui -->
+    </section>
 
-    <footer style="margin-top: 40px; padding: 20px; border-top: 1px solid var(--light); text-align: center; font-size: 14px; color: #7f8c8d;">
+    <footer style="margin-top:40px; padding:20px; border-top:1px solid var(--light); text-align:center; font-size:14px; color:#7f8c8d;">
         <p>Desenvolvido por <strong>Anderson Carvalho (Eu Concego)</strong></p>
-        <p>Dúvidas ou Feedback? <a href="mailto:euconcego@gmail.com" style="color: var(--accent); text-decoration: none;">euconcego@gmail.com</a></p>
+        <p>Dúvidas ou Feedback? <a href="mailto:euconcego@gmail.com" style="color:var(--accent); text-decoration:none;">euconcego@gmail.com</a></p>
     </footer>
 </main>
 
-<!-- Área oculta que será montada para a impressão -->
 <div id="print-area"></div>
 
 <script>
     let blocks = [];
 
-    // Carregar dados salvos
+    // ── Utilitários de feedback acessível ──────────────────────────────────
+    function anunciarLeitor(texto) {
+        const el = document.getElementById('leitor-anuncio');
+        el.textContent = '';
+        setTimeout(() => { el.textContent = texto; }, 50);
+    }
+
+    function mostrarFeedback(texto, tipo = 'sucesso') {
+        const el = document.getElementById('msg-feedback');
+        el.textContent = texto;
+        el.className = tipo;
+        clearTimeout(el._timer);
+        el._timer = setTimeout(() => {
+            el.textContent = '';
+            el.className = '';
+        }, 4000);
+        anunciarLeitor(texto);
+    }
+
+    // ── Diálogo acessível (substitui confirm()) ────────────────────────────
+    function confirmarAcao(mensagem) {
+        return new Promise(resolve => {
+            const overlay = document.getElementById('dialogo-overlay');
+            const texto   = document.getElementById('dialogo-texto');
+            const btnSim  = document.getElementById('dialogo-btn-sim');
+            const btnNao  = document.getElementById('dialogo-btn-nao');
+
+            texto.textContent = mensagem;
+            overlay.classList.add('ativo');
+            btnSim.focus();
+
+            function fechar(resultado) {
+                overlay.classList.remove('ativo');
+                btnSim.removeEventListener('click', onSim);
+                btnNao.removeEventListener('click', onNao);
+                resolve(resultado);
+            }
+            function onSim() { fechar(true);  }
+            function onNao() { fechar(false); }
+
+            btnSim.addEventListener('click', onSim);
+            btnNao.addEventListener('click', onNao);
+        });
+    }
+
+    // ── Persistência ────────────────────────────────────────────────────────
     window.onload = () => {
         const saved = localStorage.getItem('manuscrito_blocks');
         if (saved) {
             try {
                 blocks = JSON.parse(saved);
                 renderBlocks();
+                anunciarLeitor(`Documento carregado com ${blocks.length} bloco(s).`);
             } catch(e) {
-                console.error("Erro ao carregar blocos salvos:", e);
                 blocks = [];
             }
         }
@@ -267,36 +345,52 @@
         localStorage.setItem('manuscrito_blocks', JSON.stringify(blocks));
     }
 
+    // ── Renderização dos blocos ─────────────────────────────────────────────
     function renderBlocks() {
         const list = document.getElementById('blocks-list');
         list.innerHTML = '';
 
+        if (blocks.length === 0) {
+            list.innerHTML = '<p style="color:#999; text-align:center;">Nenhum bloco adicionado ainda.</p>';
+            save();
+            return;
+        }
+
         blocks.forEach((block, index) => {
             const card = document.createElement('div');
             card.className = 'block-card';
-            
+            card.setAttribute('role', 'article');
+
+            const numBloco = index + 1;
+            const total    = blocks.length;
+
             let contentHtml = '';
             if (block.type === 'text') {
-                contentHtml = `<div class="block-content">${block.content.substring(0, 100)}...</div>`;
+                const preview = block.content.length > 100
+                    ? block.content.substring(0, 100) + '...'
+                    : block.content;
+                contentHtml = `<div class="block-content" aria-label="Prévia do texto: ${preview.replace(/"/g, "'")}">${preview}</div>`;
             } else {
+                const pos = block.position || 'img-center';
+                const posLabel = { 'img-top': 'Topo', 'img-center': 'Centro', 'img-bottom': 'Base' }[pos] || pos;
                 contentHtml = `
-                    <img src="${block.content}" class="img-preview">
-                    <div class="img-position-controls">
-                        Posição: 
-                        <button onclick="updateImgPos(${index}, 'img-top')">Topo</button>
-                        <button onclick="updateImgPos(${index}, 'img-center')">Centro</button>
-                        <button onclick="updateImgPos(${index}, 'img-bottom')">Base</button>
+                    <img src="${block.content}" class="img-preview" alt="Imagem adicionada, posicionada no ${posLabel}">
+                    <div class="img-position-controls" role="group" aria-label="Posição da imagem no documento">
+                        <span>Posição:</span>
+                        <button onclick="updateImgPos(${index}, 'img-top')"    aria-label="Posicionar imagem no topo"   aria-pressed="${pos === 'img-top'}">Topo</button>
+                        <button onclick="updateImgPos(${index}, 'img-center')" aria-label="Posicionar imagem no centro" aria-pressed="${pos === 'img-center'}">Centro</button>
+                        <button onclick="updateImgPos(${index}, 'img-bottom')" aria-label="Posicionar imagem na base"   aria-pressed="${pos === 'img-bottom'}">Base</button>
                     </div>
                 `;
             }
 
             card.innerHTML = `
                 <div class="block-header">
-                    <span class="block-type">${block.type}</span>
-                    <div class="block-actions">
-                        <button onclick="move(${index}, -1)" aria-label="Subir bloco">↑</button>
-                        <button onclick="move(${index}, 1)" aria-label="Descer bloco">↓</button>
-                        <button onclick="removeBlock(${index})" style="background:var(--danger); color:white;">X</button>
+                    <span class="block-type" aria-label="Bloco ${numBloco} de ${total}: tipo ${block.type === 'text' ? 'texto' : 'imagem'}">${block.type === 'text' ? 'Texto' : 'Imagem'} — ${numBloco}/${total}</span>
+                    <div class="block-actions" role="group" aria-label="Ações do bloco ${numBloco}">
+                        <button onclick="move(${index}, -1)"   aria-label="Mover bloco ${numBloco} para cima"   ${index === 0 ? 'disabled aria-disabled="true"' : ''}>↑</button>
+                        <button onclick="move(${index}, 1)"    aria-label="Mover bloco ${numBloco} para baixo"  ${index === total - 1 ? 'disabled aria-disabled="true"' : ''}>↓</button>
+                        <button onclick="removeBlock(${index})" style="background:var(--danger); color:white;" aria-label="Remover bloco ${numBloco}">Remover</button>
                     </div>
                 </div>
                 ${contentHtml}
@@ -306,55 +400,64 @@
         save();
     }
 
+    // ── Ações dos blocos ───────────────────────────────────────────────────
     function addTextBlock() {
-        const text = document.getElementById('text-input').value;
-        if (!text) return;
+        const input = document.getElementById('text-input');
+        const text  = input.value.trim();
+        if (!text) {
+            mostrarFeedback('O campo de texto está vazio.', 'erro');
+            return;
+        }
         blocks.push({ type: 'text', content: text });
-        document.getElementById('text-input').value = '';
+        input.value = '';
         renderBlocks();
+        mostrarFeedback(`Bloco de texto ${blocks.length} adicionado.`);
     }
 
     function addImageBlock(event) {
         const file = event.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = (e) => {
-            blocks.push({ 
-                type: 'image', 
-                content: e.target.result, 
-                position: 'img-center' 
-            });
+            blocks.push({ type: 'image', content: e.target.result, position: 'img-center' });
             renderBlocks();
+            mostrarFeedback(`Imagem adicionada como bloco ${blocks.length}.`);
         };
         reader.readAsDataURL(file);
+        event.target.value = '';
     }
 
     function updateImgPos(index, pos) {
         blocks[index].position = pos;
-        alert("Posição da imagem alterada para: " + pos);
+        const posLabel = { 'img-top': 'Topo', 'img-center': 'Centro', 'img-bottom': 'Base' }[pos] || pos;
+        renderBlocks();
+        mostrarFeedback(`Posição da imagem alterada para: ${posLabel}.`, 'info');
     }
 
     function move(index, direction) {
         const newIndex = index + direction;
         if (newIndex < 0 || newIndex >= blocks.length) return;
-        const temp = blocks[index];
-        blocks[index] = blocks[newIndex];
-        blocks[newIndex] = temp;
+        [blocks[index], blocks[newIndex]] = [blocks[newIndex], blocks[index]];
         renderBlocks();
+        const dir = direction === -1 ? 'subiu' : 'desceu';
+        mostrarFeedback(`Bloco ${newIndex + 1} ${dir} para a posição ${index + 1}.`, 'info');
     }
 
-    function removeBlock(index) {
-        if (confirm("Deseja remover este bloco?")) {
-            blocks.splice(index, 1);
-            renderBlocks();
+    async function removeBlock(index) {
+        const confirmado = await confirmarAcao(`Remover o bloco ${index + 1}? Esta ação não pode ser desfeita.`);
+        if (!confirmado) {
+            anunciarLeitor('Remoção cancelada.');
+            return;
         }
+        blocks.splice(index, 1);
+        renderBlocks();
+        mostrarFeedback('Bloco removido.');
     }
 
+    // ── Exportações ────────────────────────────────────────────────────────
     function exportDOCX() {
-        const template = document.getElementById('select-template').value;
-        let bodyContent = "";
-        
+        if (blocks.length === 0) { mostrarFeedback('Adicione ao menos um bloco antes de exportar.', 'erro'); return; }
+        let bodyContent = '';
         blocks.forEach(block => {
             if (block.type === 'text') {
                 bodyContent += `<p>${block.content.replace(/\n/g, '<br>')}</p>`;
@@ -362,67 +465,60 @@
                 bodyContent += `<p><img src="${block.content}" style="width:300px"></p>`;
             }
         });
-
-        // Cabeçalho necessário para o Word reconhecer como HTML/Word
-        const header = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-                        <head><meta charset='utf-8'><title>Export DOCX</title></head><body>`;
-        const footer = "</body></html>";
-        const sourceHTML = header + bodyContent + footer;
-        
-        const blob = new Blob(['\ufeff', sourceHTML], {
-            type: 'application/msword'
-        });
-        
-        const url = URL.createObjectURL(blob);
+        const header = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Manuscrito</title></head><body>`;
+        const blob = new Blob(['\ufeff', header + bodyContent + '</body></html>'], { type: 'application/msword' });
         const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Manuscrito_Documento.doc'; // Usamos .doc para compatibilidade total via blob
+        a.href = URL.createObjectURL(blob);
+        a.download = 'Manuscrito_Documento.doc';
         a.click();
+        mostrarFeedback('Documento Word gerado e baixado.');
     }
 
     function exportTXT() {
-        let textContent = "";
+        if (blocks.length === 0) { mostrarFeedback('Adicione ao menos um bloco antes de exportar.', 'erro'); return; }
+        let textContent = '';
         blocks.forEach(block => {
             if (block.type === 'text') {
-                textContent += block.content + "\n\n";
+                textContent += block.content + '\n\n';
             } else {
-                textContent += "[Imagem: " + (block.position || 'centro') + "]\n\n";
+                textContent += '[Imagem: ' + ({'img-top':'Topo','img-center':'Centro','img-bottom':'Base'}[block.position] || 'Centro') + ']\n\n';
             }
         });
-        
         const blob = new Blob([textContent], { type: 'text/plain' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = 'Manuscrito_Documento.txt';
         a.click();
+        mostrarFeedback('Arquivo de texto gerado e baixado.');
     }
 
     function exportHTML() {
+        if (blocks.length === 0) { mostrarFeedback('Adicione ao menos um bloco antes de exportar.', 'erro'); return; }
         const template = document.getElementById('select-template').value;
-        const style = document.querySelector('style').innerHTML;
-        
-        let bodyContent = "";
+        const style    = document.querySelector('style').innerHTML;
+        let bodyContent = '';
         blocks.forEach(block => {
             if (block.type === 'text') {
-                bodyContent += `<p style="white-space: pre-wrap;">${block.content}</p>`;
+                bodyContent += `<p style="white-space:pre-wrap;">${block.content}</p>`;
             } else {
-                bodyContent += `<div class="img-block ${block.position || 'img-center'}"><img src="${block.content}" style="max-width:100%"></div>`;
+                bodyContent += `<div class="img-block ${block.position || 'img-center'}"><img src="${block.content}" style="max-width:100%" alt="Imagem do documento"></div>`;
             }
         });
-
-        const fullHtml = `<!DOCTYPE html><html lang="pt-br"><head><meta charset="UTF-8"><style>${style}</style></head><body class="${template}" style="background: white; padding: 40px;">${bodyContent}</body></html>`;
+        const fullHtml = `<!DOCTYPE html><html lang="pt-br"><head><meta charset="UTF-8"><style>${style}</style></head><body class="${template}" style="background:white;padding:40px;">${bodyContent}</body></html>`;
         const blob = new Blob([fullHtml], { type: 'text/html' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = 'Manuscrito_Documento.html';
         a.click();
+        mostrarFeedback('Página HTML gerada e baixada.');
     }
 
     function exportMarkdown() {
-        let mdContent = "";
+        if (blocks.length === 0) { mostrarFeedback('Adicione ao menos um bloco antes de exportar.', 'erro'); return; }
+        let mdContent = '';
         blocks.forEach(block => {
             if (block.type === 'text') {
-                mdContent += block.content + "\n\n";
+                mdContent += block.content + '\n\n';
             } else {
                 mdContent += `![Imagem](${block.content})\n\n`;
             }
@@ -432,6 +528,7 @@
         a.href = URL.createObjectURL(blob);
         a.download = 'Manuscrito_Documento.md';
         a.click();
+        mostrarFeedback('Arquivo Markdown gerado e baixado.');
     }
 </script>
 
